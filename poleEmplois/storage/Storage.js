@@ -10,13 +10,11 @@ export class Storage {
         console.log(id + " : " + this.exist(id));
     }
     static identificationVerif(){
-        if(this.identification.identifiant !== null && this.identification.password !== null && this.identification.codePostal != null)
-          return true;
-      return false;
+        return this.identification.codePostal != null && this.identification.password !== null && this.identification.identifiant !== null;
     }
-    static exist(id){
-        if(this.getData(id))
-          return (id == 'identification' ? this.identificationVerif() : true);
+    static exist(param){
+        if(this.getData(param))
+          return (param === 'identification' ? this.identificationVerif() : true);
       return false;
     }
     static setData(dataName, data){
@@ -24,7 +22,7 @@ export class Storage {
     }
     static getData(dataName){
       let data = localStorage.getItem(dataName);
-      if(data != null && data != "undefined")
+      if(data != null && data !== "undefined")
         return this[dataName] = JSON.parse(data);
       else
         return this[dataName] = false;

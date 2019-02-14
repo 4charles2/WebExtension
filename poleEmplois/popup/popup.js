@@ -1,4 +1,4 @@
-import {Storage} from "/storage/storage.js"
+import {Storage} from "/storage/storage.js";
 
 let menuElmnt = document.getElementById("menu");
 

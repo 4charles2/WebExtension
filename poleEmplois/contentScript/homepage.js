@@ -16,7 +16,7 @@ myRuntime.onMessage.addListener(function(msg){
       URLs = JSON.parse(msg.URLs);
       break;
     case msg.hasOwnProperty('collecInfo'):
-      if(document.readyState == "complete"){
+      if(document.readyState === "complete"){
         console.log("Je collecte les infos -----");
         myRuntime.postMessage({news: JSON.stringify(collectInfo())});
       }else{
@@ -78,9 +78,9 @@ function collectInfo(){
  */
 function actualisation(urlEspacePerso, urlButtonActualisation) {
   console.log(document.location.href + urlEspacePerso);
-  if (document.location.href == urlEspacePerso) {
+  if (document.location.href === urlEspacePerso) {
     let buttonActualisation = document.querySelector(urlButtonActualisation);
-    if (buttonActualisation != undefined) {
+    if (buttonActualisation !== undefined) {
       buttonActualisation.click();
       return {actualisation: "J'ai cliquer sur actualisation"};
     } else

@@ -18,10 +18,8 @@ let pathScripts = {
   "options":        "/options/options.html"
 };
 
-//Si date du jour et date de prochaine actualisation est égale alors éxecute l'extension
-let charles;
-console.log(charles);
 
+let charles;
 let intervalId = false;
 
 main();
@@ -32,6 +30,7 @@ function main(){
   charles = new Chomeur(Storage.identification.identifiant, Storage.identification.password, Storage.identification.codePostal);
 
   console.log(Storage.identification);
+
   console.log(charles);
   //If une execution avait déjà été lancer la stop;
   intervalId ? clearInterval(intervalId):'';
@@ -84,7 +83,7 @@ browser.runtime.onConnect.addListener((remote) => {
           eventIdentification(remote, msg);
           break;
         case("EspacePersonnel"):
-        console.log("coucou homepage.js");
+          console.log("coucou homepage.js");
           eventEspacePersonnel(remote, msg);
           break;
         case("Questionnaire"):
