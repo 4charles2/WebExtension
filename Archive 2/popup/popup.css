@@ -1,0 +1,21 @@
+#countCourrier {
+  border-radius: 50%;
+  background-color: rgba(149, 25, 37, 0.99);
+  background: radial-gradient(ellipse at center, #a90329 0%,#8f0222 51%,#8f0222 55%,rgb(0, 0, 0) 93%);
+  color: white;
+  padding: 6px 10px 5px 10px;
+}
+#montantLastPaiement{
+
+}
+#sum-last-payement, #nextEvent{
+  padding: 5px;
+  color: rgb(4, 61, 89);
+  font-weight: bold;
+}
+#sum-last-payement{
+  background-color: rgba(15, 113, 22, 0.74);
+}
+#nextEvent {
+  background-color: rgba(231, 195, 9, 0.81);
+}

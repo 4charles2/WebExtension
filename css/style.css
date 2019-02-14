@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Oxygen');
+body {
+
+  font-size: 14px;
+  font-family: 'Oxygen', sans-serif;
+  background-color: rgb(0, 36, 43);
+    /*background-color: rgb(57, 57, 56);*/
+  color: rgb(255, 255, 255);
+  letter-spacing: 1px;
+  margin: 0px;
+}
+section {
+  padding: 10px 0px 4px 0px;
+  border-bottom: 2px solid rgba(6, 74, 190, 0.5);
+
+}
+article{
+  padding: 10px;
+  background-color: white;
+  background: linear-gradient(140deg, rgba(255,255,255,1) 1%,rgba(255,255,255,1) 68%,rgba(255,255,255,0.85) 94%,rgba(255,255,255,0.7) 100%);
+  color: black;
+}
+aside {
+  background-color: black;
+}
+h1{
+  display: flex;
+  padding: 10px;
+  text-align: center;
+  background-color: rgb(4, 61, 89);
+  margin: 0px;
+}
+h3{
+  margin-left: 25%;
+  margin-top: auto;
+}
+p{
+  margin: 5px;
+  padding: 1px;
+}
+
+a{
+  color: rgb(131, 170, 255)
+}
+
+footer{
+  background-color: rgb(69, 69, 69);
+  color: rgb(245, 170, 170);
+  padding: 15px;
+
+}

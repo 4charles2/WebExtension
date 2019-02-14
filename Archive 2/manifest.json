@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "poleEmplois",
+  "version": "1.1",
+  "author": "Tognol Charles",
+  "description": "Automatisation des tâches sur le site de pôle emplois",
+  "icons": {
+    "48": "image/logo.png",
+    "96": "image/iconx96.png"
+  },
+  "background": {
+    "page": "background-page.html"
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_area": "navbar",
+    "default_icon": {
+      "16": "image/iconx16.png",
+      "32": "image/iconx32.png",
+      "64": "image/iconx64.png"
+    },
+    "default_popup": "popup/popup.html",
+    "default_title": "Actualisation Pole Emplois"
+  },
+  "developer": {
+    "name": "Tognol Charles",
+    "url": "https://charles-tognol.fr"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "browser_style": true
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "<all_urls>",
+    "storage"
+  ]
+}
