@@ -1,5 +1,6 @@
 import {Storage} from "/storage/storage.js";
 
+console.log("Je suis dans popup.js");
 let menuElmnt = document.getElementById("menu");
 
 if (Storage.exist('news')){

@@ -9,36 +9,36 @@ var myRuntime = browser.runtime.connect({name: "EspacePersonnel"});
 myRuntime.postMessage({connect: "(Script de contenu) homepage.js Je te reçoit runtime"});
 
 //Reçoit les messages du runtime
-myRuntime.onMessage.addListener(function(msg){
-  switch(true){
-    case msg.hasOwnProperty('URLs'):
-      console.log("j'ai reçu les URLs");
-      URLs = JSON.parse(msg.URLs);
-      break;
-    case msg.hasOwnProperty('collecInfo'):
-      if(document.readyState === "complete"){
-        console.log("Je collecte les infos -----");
-        myRuntime.postMessage({news: JSON.stringify(collectInfo())});
-      }else{
-        document.addEventListener('readystatechange',(evt) => {
-          if(evt.target.readyState === "complete"){
-            console.log("Je collecte les infos -----");
-            myRuntime.postMessage({news: JSON.stringify(collectInfo())});
-          }else {
-            console.log("Je patiente que le document finisse de charger");
-          }
-        });
-      }
-      break;
-      case msg.hasOwnProperty('actualisation'):
-        myRuntime.postMessage({greeting: "Ok je lance l'actualisation"});
-        myRuntime.postMessage(actualisation(URLs.urlEspacePerso, URLs.urlButtonActualisation));
-        break;
-    default:
-      console.log("Message du runtime");
-      console.log(msg);
-      break;
-  }
+myRuntime.onMessage.addListener(function (msg) {
+    switch (true) {
+        case msg.hasOwnProperty('URLs'):
+            console.log("j'ai reçu les URLs");
+            URLs = JSON.parse(msg.URLs);
+            break;
+        case msg.hasOwnProperty('collecInfo'):
+            if (document.readyState === "complete") {
+                console.log("Je collecte les infos -----");
+                myRuntime.postMessage({news: JSON.stringify(collectInfo())});
+            } else {
+                document.addEventListener('readystatechange', (evt) => {
+                    if (evt.target.readyState === "complete") {
+                        console.log("Je collecte les infos -----");
+                        myRuntime.postMessage({news: JSON.stringify(collectInfo())});
+                    } else {
+                        console.log("Je patiente que le document finisse de charger");
+                    }
+                });
+            }
+            break;
+        case msg.hasOwnProperty('actualisation'):
+            myRuntime.postMessage({greeting: "Ok je lance l'actualisation"});
+            myRuntime.postMessage(actualisation(URLs.urlEspacePerso, URLs.urlButtonActualisation));
+            break;
+        default:
+            console.log("Message du runtime");
+            console.log(msg);
+            break;
+    }
 });
 
 /**
@@ -46,28 +46,28 @@ myRuntime.onMessage.addListener(function(msg){
  *
  * @return {JSON} Return un object JSON avec les données collecte
  */
-function collectInfo(){
+function collectInfo() {
 
-  //Data JSON qui seront stocké
-  let infos = {
-    "dateLastActualisation": "",
-    "dateNextActualisation": "",
-    "dateLastPaiement": "",
-    "montantLastPaiement": "",
-    "countCourrier": ""
-  }
-  //Je recupere toutes les div .infos dans le .container-situation
-  var divInfos = document.querySelectorAll('.container-situation .info');
-  //Je recupere le nombre de courrier non lues .notifications-bubble[0]
-  var bubbleCourrier = document.querySelector('.notification-bubble');
+    //Data JSON qui seront stocké
+    let infos = {
+        "dateLastActualisation": "",
+        "dateNextActualisation": "",
+        "dateLastPaiement": "",
+        "montantLastPaiement": "",
+        "countCourrier": ""
+    };
+    //Je recupere toutes les div .infos dans le .container-situation
+    var divInfos = document.querySelectorAll('.container-situation .info');
+    //Je recupere le nombre de courrier non lues .notifications-bubble[0]
+    var bubbleCourrier = document.querySelector('.notification-bubble');
 
-  infos.dateLastActualisation = divInfos[0].firstChild.nodeValue;
-  infos.dateNextActualisation = divInfos[0].nextSibling.firstChild.textContent.split('le')[1].split('et')[0];
-  infos.dateLastPaiement = divInfos[2].firstChild.nodeValue.split('le')[1];
-  infos.montantLastPaiement = divInfos[2].firstChild.nodeValue.split(' ')[3];
-  infos.countCourrier = bubbleCourrier.firstChild.nodeValue;
+    infos.dateLastActualisation = divInfos[0].firstChild.nodeValue;
+    infos.dateNextActualisation = divInfos[0].nextSibling.firstChild.textContent.split('le')[1].split('et')[0];
+    infos.dateLastPaiement = divInfos[2].firstChild.nodeValue.split('le')[1];
+    infos.montantLastPaiement = divInfos[2].firstChild.nodeValue.split(' ')[3];
+    infos.countCourrier = bubbleCourrier.firstChild.nodeValue;
 
-  return infos;
+    return infos;
 }
 
 /**
@@ -77,15 +77,15 @@ function collectInfo(){
  *
  */
 function actualisation(urlEspacePerso, urlButtonActualisation) {
-  console.log(document.location.href + urlEspacePerso);
-  if (document.location.href === urlEspacePerso) {
-    let buttonActualisation = document.querySelector(urlButtonActualisation);
-    if (buttonActualisation !== undefined) {
-      buttonActualisation.click();
-      return {actualisation: "J'ai cliquer sur actualisation"};
+    console.log(document.location.href + urlEspacePerso);
+    if (document.location.href === urlEspacePerso) {
+        let buttonActualisation = document.querySelector(urlButtonActualisation);
+        if (buttonActualisation != undefined) {
+            buttonActualisation.click();
+            return {actualisation: "J'ai cliquer sur actualisation"};
+        } else
+            return {finish: 'Vous êtes déjà actualisé'};
     } else
-      return {finish: 'Vous êtes déjà actualisé'};
-  } else
-    return {error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"};
+        return {error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"};
 
 }

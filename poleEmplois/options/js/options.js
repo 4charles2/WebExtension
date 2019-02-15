@@ -2,10 +2,10 @@ import {Storage} from "/storage/storage.js"
 
 //Selectionne les forms du document
 var forms = document.forms;
-var myRuntime = browser.runtime.connect({name: "options"})
+var myRuntime = browser.runtime.connect({name: "options"});
 //ajoute un event submit au form pour declanche la sauvegarde des paramètres
 //Appel la fonction saveOptions
-for (var form of forms){
+for(var form of forms){
     form.addEventListener('submit', function (){
         saveOptions(this);
     });
