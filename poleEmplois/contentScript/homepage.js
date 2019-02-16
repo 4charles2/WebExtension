@@ -15,7 +15,7 @@ myRuntime.onMessage.addListener(function (msg) {
             console.log("j'ai reçu les URLs");
             URLs = JSON.parse(msg.URLs);
             break;
-        case msg.hasOwnProperty('collecInfo'):
+        case msg.hasOwnProperty('collectInfo'):
             if (document.readyState === "complete") {
                 console.log("Je collecte les infos -----");
                 myRuntime.postMessage({news: JSON.stringify(collectInfo())});

@@ -64,8 +64,8 @@ function main() {
         console.log("les identifiants ne sont pas entrer !");
         console.log(browser.runtime.getURL(pathScripts.options));
         browser.runtime.openOptionsPage()
-            .then( () => { browser.tabs.executeScript({ code: `console.log("Vous n'avez pas encore entrer vos identifiants !");`}) },
-                   () => { browser.tabs.executeScript({ code: `console.log("Une erreur est survenue veuillez desinstaller l'extension et la réinstaller ! \n si le probleme persiste contacter le developpeur : contact@charles-tognol.fr ");`})}
+            .then( () => { console.log("Vous n'avez pas encore entrer vos identifiants !"); },
+                   () => { console.log("Une erreur est survenue veuillez desinstaller l'extension et la réinstaller ! \n si le probleme persiste contacter le developpeur : contact@charles-tognol.fr ");}
                  );
         /*
         browser.tabs.create({"url": pathScripts.options, "active": true})
@@ -79,9 +79,9 @@ function main() {
 var connectFromCS = [];
 //Reçoit la connection des script de contenu
 browser.runtime.onConnect.addListener((remote) => {
-    connectFromCS[remote.sender.tab.id] = remote;
-    connectFromCS[remote.sender.tab.id].postMessage({greeting: "(background) Salut script de contenu Nous sommes connecté !"});
-    connectFromCS[remote.sender.tab.id].onMessage.addListener(function (msg) {
+    connectFromCS[remote.sender.contextId] = remote;
+    connectFromCS[remote.sender.contextId].postMessage({greeting: "(background) Salut script de contenu Nous sommes connecté !"});
+    connectFromCS[remote.sender.contextId].onMessage.addListener(function (msg) {
         if (!msg.hasOwnProperty('error') && !msg.hasOwnProperty('finish')) {
             switch (remote.name) {
                 case("Identification"):
@@ -95,8 +95,18 @@ browser.runtime.onConnect.addListener((remote) => {
                     eventQuestionnaire(remote, msg);
                     break;
                 case("options"):
+                    if(msg.hasOwnProperty("identification")){
+                        Storage.setData("identification", JSON.parse(msg.identification));
+                    }
+                    //TODO prendre en charge les modifs des URL sur la page option
                     console.log("Merci ! La vérification est en cours ...");
+                    console.log(msg);
                     main();
+                    break;
+                case("popup"):
+                    console.log(Storage.identification);
+                    remote.postMessage({'identification': JSON.stringify(Storage.identification)});
+                    remote.postMessage({'news': JSON.stringify(Storage.news)});
                     break;
                 default:
                     console.log("Aucune action pour le remote");
@@ -131,8 +141,9 @@ function eventQuestionnaire() {
 function eventEspacePersonnel(remote, msg) {
     switch (true) {
         case msg.hasOwnProperty('connect'):
+            console.log("Je t'envoie les URLs");
             remote.postMessage({URLs: JSON.stringify(URLs.homepage)});
-            remote.postMessage({collecInfo: "Collect les infos"});
+            remote.postMessage({collectInfo: "Collect les infos"});
             break;
         case msg.hasOwnProperty('news'):
             console.log("J'ai bien reçu les infos");
