@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "pole emplois",
-  "version": "1.2.3",
+  "version": "2.2",
   "author": "Tognol Charles",
   "description": "Automatisation des tâches sur le site de pôle emplois",
   "icons": {
