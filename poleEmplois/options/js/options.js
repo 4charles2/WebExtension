@@ -4,7 +4,7 @@ console.log("Je suis dans options page !");
 
 //Selectionne les forms du document
 var forms = document.forms;
-var myRuntime = browser.runtime.connect({name: "options"});
+var myRuntime = chrome.runtime.connect({name: "options"});
 //myRuntime.postMessage({})
 //ajoute un event submit au form pour declanche la sauvegarde des paramètres
 //Appel la fonction saveOptions

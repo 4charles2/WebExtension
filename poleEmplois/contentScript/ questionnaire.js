@@ -1,6 +1,6 @@
 console.log("Je vais repondre aux questions !");
 
-var myRuntime = browser.runtime.connect({name: 'Questionnaire'});
+var myRuntime = chrome.runtime.connect({name: 'Questionnaire'});
 myRuntime.postMessage({connect: "(SCript de contenu) Je te reçoit runtime"});
 // TODO: Finir ce script le 26 février
 myRuntime.onMessage.addListener(function(msg){

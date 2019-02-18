@@ -4,7 +4,7 @@ var keyboardPassword = ["E", "A", "D", "B", "H", "I", "J", "F", "G", "C"];
 console.log("Sur la page d'identification de pole emplois");
 
 //Etablie la connexion avec le background
-var myRuntime = browser.runtime.connect({name: "Identification"});
+var myRuntime = chrome.runtime.connect({name: "Identification"});
 
 
 //reçoit les message du background
@@ -40,7 +40,7 @@ function connection(chomeur){
           console.log("login not defined");
           reject("login not defined");
         }
-      }, 3000);
+      }, 3000, resolve, reject);
     }).then(() => {
 
       setTimeout(() => {
@@ -52,10 +52,10 @@ function connection(chomeur){
           }
           document.getElementById("codepostal").value = chomeur.codePostal;
           document.getElementById("submit").click();
-          resolve("password OK");
+          //resolve("password OK");
         }else {
           console.log("PassWord not defined");
-          reject("Password not defined");
+          //reject("Password not defined");
         }
       }, 2000);
     }).then(resolve => {

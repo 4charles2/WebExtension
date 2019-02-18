@@ -2,7 +2,7 @@
 console.log("Je suis dans popup.js");
 let menuElmnt = document.getElementById("menu");
 
-let myRuntime = browser.runtime.connect({name: "popup"});
+let myRuntime = chrome.runtime.connect({name: "popup"});
 myRuntime.postMessage({'verif': "as tu les infos"});
 
 
@@ -22,7 +22,7 @@ myRuntime.onMessage.addListener(function(msg){
         case msg.hasOwnProperty('news'):
             if (msg.news !== "false"){
                 console.log(msg.news);
-                let data = JSON.parse(msg.new);
+                let data = JSON.parse(msg.news);
                 for (let info in data)
                     document.getElementById(info).textContent = data[info];
             }
@@ -40,5 +40,5 @@ myRuntime.onMessage.addListener(function(msg){
 
 var aLink = document.getElementById("options_page");
 aLink.addEventListener("click", function() {
-  browser.runtime.openOptionsPage();
+  chrome.runtime.openOptionsPage();
 });

@@ -2,7 +2,7 @@ let connectFromCS = [];
 
 export default class OnMessage {
   static recepConnected(typeMsg){
-    browser.runtime.onConnect.addListener((remote) => {
+    chrome.runtime.onConnect.addListener((remote) => {
       this.connected(remote, typeMsg == "notification" ? this.showNotify : this.showMsg);
     });
   }
@@ -27,7 +27,7 @@ export default class OnMessage {
       console.log(msg);
   }
   static showNotify(msg, remote){
-      browser.notifications.create("notification",{
+      chrome.notifications.create("notification",{
         "type": "basic",
         "title": "Vous avez une notification de la web Extension",
         "message": msg

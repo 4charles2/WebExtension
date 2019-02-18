@@ -2,6 +2,8 @@ import {Chomeur} from "/modules/Chomeur.js";
 import {Storage} from "/storage/Storage.js";
 import {injectFileActiveTab} from "/libWebExtension/injectFileActiveTab.js";
 
+
+let dateFrenchs = ['Janv.', 'Févr.', 'Mars', "Avri.", "Mai", "Juin", "Juil.", "Aout", "Sept.", "Octo.", "Nove.", "Dece."];
 let URLs = {
     "urlConnect": "https://authentification-candidat.pole-emploi.fr/connexion/XUI/#login/&realm=%2Findividu&goto=https%3A%2F%2Fauthentification-candidat.pole-emploi.fr%2Fconnexion%2Foauth2%2Fauthorize%3Frealm%3D%252Findividu%26response_type%3Did_token%2520token%26scope%3Dopenid%2520idRci%2520profile%2520contexteAuthentification%2520email%2520courrier%2520notifications%2520etatcivil%2520logW%2520individu%2520pilote%2520nomenclature%2520coordonnees%2520navigation%2520reclamation%2520prdvl%2520idIdentiteExterne%26client_id%3DUSG_PN073-tdbcandidat_6408B42F17FC872440D4FF01BA6BAB16999CD903772C528808D1E6FA2B585CF2%26state%3DeD6N8ikP6PGPciAz%26nonce%3DqHx1uLZ9J6J-bIhb%26redirect_uri%3Dhttps%253A%252F%252Fcandidat.pole-emploi.fr%252Fespacepersonnel%252F",
     "homepage": {
@@ -21,6 +23,7 @@ let pathScripts = {
 
 let charles;
 let intervalId = false;
+let dateLastActualisation = new Date();
 
 main();
 
@@ -38,47 +41,52 @@ function main() {
     if (Storage.identification) {
         //Vérifie quotidiennement les informations stocké
         intervalId = setInterval(function () {
-            Storage.hydrate();
-            let DateDuJour = new Date();
-            let dateNextActualisation = Storage.news.dateNextActualisation ? Storage.news.dateNextActualisation.split(' ') : undefined;
-            console.log(Storage.news.dateNextActualisation);
-            if (dateNextActualisation === undefined || DateDuJour.getUTCDate() >= dateNextActualisation[1]) {
-                console.log("je creer l'onglet Pole emplois");
-                //console.log(DateDuJour.getUTCDate() + " <= " + dateNextActualisation[1]);
-                var tab = browser.tabs.create({
-                    "url": URLs.urlConnect,
-                    "active": true
-                }).then((greeting) => {
-                    browser.tabs.executeScript({
-                        file: pathScripts.connect
-                    });
-                    console.log(greeting);
-                }, (error) => {
-                    console.log("Une erreur pendant la création du nouvelle onglet" + error);
-                });
-            } else {
-                console.log("Vous etes déjà actualiser !");
-            }
-        }, 60000);//86400000 Toutes les 24 Heures
+            launch();
+        }, 86400000);//86400000 Toutes les 24 Heures
     } else {
         console.log("les identifiants ne sont pas entrer !");
-        console.log(browser.runtime.getURL(pathScripts.options));
-        browser.runtime.openOptionsPage()
-            .then( () => { console.log("Vous n'avez pas encore entrer vos identifiants !"); },
-                   () => { console.log("Une erreur est survenue veuillez desinstaller l'extension et la réinstaller ! \n si le probleme persiste contacter le developpeur : contact@charles-tognol.fr ");}
-                 );
-        /*
-        browser.tabs.create({"url": pathScripts.options, "active": true})
-            .then( () => { browser.tabs.executeScript({ code: `console.log("Vous n'avez pas encore entrer vos identifiants !");`}) },
-                () => { browser.tabs.executeScript({ code: `console.log("Une erreur est survenue veuillez desinstaller l'extension et la réinstaller ! \n si le probleme persiste contacter le developpeur : contact@charles-tognol.fr ");`}) } );
-        */
+        console.log(chrome.runtime.getURL(pathScripts.options));
+        chrome.runtime.openOptionsPage();
+            //.then( () => { console.log("Vous n'avez pas encore entrer vos identifiants !"); },
+              //     () => { console.log("Une erreur est survenue veuillez desinstaller l'extension et la réinstaller ! \n si le probleme persiste contacter le developpeur : contact@charles-tognol.fr ");}
+                // );
+    }
+}
+
+function launch(){
+    Storage.hydrate();
+    let DateDuJour = new Date();
+    let dateNextActualisation = Storage.news.dateNextActualisation ? Storage.news.dateNextActualisation.split(' ') : undefined;
+    console.log(Storage.news.dateNextActualisation);
+    if (dateNextActualisation === undefined || DateDuJour.getUTCDate() >= dateNextActualisation[1]) {
+        //J' enregistre la date de verification d'actualisation pour comparaison ultérieure
+        console.log("je creer l'onglet Pole emplois");
+        //console.log(DateDuJour.getUTCDate() + " <= " + dateNextActualisation[1]);
+        var tab = chrome.tabs.create({
+            "url": URLs.urlConnect,
+            "active": true
+        }, function(tab){
+            chrome.tabs.executeScript({file: pathScripts.connect});
+        });
+        //Chrome ne prend pas en charge les promises
+        /*.then((greeting) => {
+        chrome.tabs.executeScript({
+            file: pathScripts.connect
+        });
+        console.log(greeting);
+    }, (error) => {
+        console.log("Une erreur pendant la création du nouvelle onglet" + error);
+    });
+    */
+    } else {
+        console.log("Vous etes déjà actualiser !");
     }
 }
 
 //Liste des ports de connexion avec les scripts de contenu
 var connectFromCS = [];
 //Reçoit la connection des script de contenu
-browser.runtime.onConnect.addListener((remote) => {
+chrome.runtime.onConnect.addListener((remote) => {
     connectFromCS[remote.sender.contextId] = remote;
     connectFromCS[remote.sender.contextId].postMessage({greeting: "(background) Salut script de contenu Nous sommes connecté !"});
     connectFromCS[remote.sender.contextId].onMessage.addListener(function (msg) {
@@ -101,10 +109,11 @@ browser.runtime.onConnect.addListener((remote) => {
                     //TODO prendre en charge les modifs des URL sur la page option
                     console.log("Merci ! La vérification est en cours ...");
                     console.log(msg);
+                    launch();
                     main();
                     break;
                 case("popup"):
-                    console.log(Storage.identification);
+                    Storage.hydrate();
                     remote.postMessage({'identification': JSON.stringify(Storage.identification)});
                     remote.postMessage({'news': JSON.stringify(Storage.news)});
                     break;
@@ -118,8 +127,8 @@ browser.runtime.onConnect.addListener((remote) => {
         } else if (msg.hasOwnProperty('finish')) {
             console.log("(finish)Reponse du script : " + msg.finish);
             console.log("Je me deconnecte");
-            browser.tabs.executeScript({code: `document.querySelector('.deconnexion').click()`});
-            browser.tabs.executeScript({code: `document.querySelector('.btn-primary').click()`});
+            chrome.tabs.executeScript({code: `document.querySelector('.deconnexion').click()`});
+            chrome.tabs.executeScript({code: `document.querySelector('.btn-primary').click()`});
             //<button class="btn btn-primary" data-dismiss="modal" type="button">Quitter mon espace</button>
         } else {
             console.log("Une erreur à été levée");
@@ -148,12 +157,16 @@ function eventEspacePersonnel(remote, msg) {
         case msg.hasOwnProperty('news'):
             console.log("J'ai bien reçu les infos");
             console.log(msg.news);
-            Storage.setData('news', JSON.parse(msg.news));
+            let data = JSON.parse(msg.news);
+            //Necessaire car l'information de la derniere actualisation n'est plus disponible sur le site internet
+            data.dateLastActualisation = dateLastActualisation.getDate() + ' ' + dateFrenchs[dateLastActualisation.getMonth()];
+            Storage.setData('news', data);
             remote.postMessage({actualisation: "Lance l'actualisation"});
             break;
         case msg.hasOwnProperty('actualisation'):
             //// TODO: définir les urls Page de l'actualisation
             injectFileActiveTab(urlPage, pathScripts, 10);
+            Storage.news.dateLastActualisation = dateLastActualisation.getDate() + ' ' + dateLastActualisation.getMonth();
             break;
         default:
             console.log(msg);

@@ -12,7 +12,7 @@
     "page": "background-page.html"
   },
   "browser_action": {
-    "browser_style": true,
+
     "default_area": "navbar",
     "default_icon": {
       "16": "image/iconx16.png",
@@ -27,8 +27,7 @@
     "url": "https://charles-tognol.fr"
   },
   "options_ui": {
-    "page": "options/options.html",
-    "browser_style": true
+    "page": "options/options.html"
   },
   "permissions": [
     "tabs",

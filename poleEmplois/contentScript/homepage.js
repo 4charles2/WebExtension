@@ -5,7 +5,7 @@ let urlEspacePerso = "https://candidat.pole-emploi.fr/espacepersonnel/"
 */
 var URLs;
 
-var myRuntime = browser.runtime.connect({name: "EspacePersonnel"});
+var myRuntime = chrome.runtime.connect({name: "EspacePersonnel"});
 myRuntime.postMessage({connect: "(Script de contenu) homepage.js Je te reçoit runtime"});
 
 //Reçoit les messages du runtime
@@ -22,8 +22,10 @@ myRuntime.onMessage.addListener(function (msg) {
             } else {
                 document.addEventListener('readystatechange', (evt) => {
                     if (evt.target.readyState === "complete") {
-                        console.log("Je collecte les infos -----");
-                        myRuntime.postMessage({news: JSON.stringify(collectInfo())});
+                        console.log("Premiere tentative echoue");
+                        setTimeout(() => {
+                            myRuntime.postMessage({news: JSON.stringify(collectInfo())});
+                        }, 3000);
                     } else {
                         console.log("Je patiente que le document finisse de charger");
                     }
@@ -47,10 +49,9 @@ myRuntime.onMessage.addListener(function (msg) {
  * @return {JSON} Return un object JSON avec les données collecte
  */
 function collectInfo() {
-
+    console.log("Dans la fonction collectInfo()");
     //Data JSON qui seront stocké
     let infos = {
-        "dateLastActualisation": "",
         "dateNextActualisation": "",
         "dateLastPaiement": "",
         "montantLastPaiement": "",
@@ -58,15 +59,16 @@ function collectInfo() {
     };
     //Je recupere toutes les div .infos dans le .container-situation
     var divInfos = document.querySelectorAll('.container-situation .info');
-    //Je recupere le nombre de courrier non lues .notifications-bubble[0]
+    //Je recupere le nombre de courrier non lues .notification-bubble[0]
     var bubbleCourrier = document.querySelector('.notification-bubble');
-
-    infos.dateLastActualisation = divInfos[0].firstChild.nodeValue;
-    infos.dateNextActualisation = divInfos[0].nextSibling.firstChild.textContent.split('le')[1].split('et')[0];
+    infos.dateNextActualisation = divInfos[0].firstChild.textContent.split('le')[1].split('et')[0];
+    //N'existe plus c'etais une div en dessous de la prochaine date d'actualisation
+    //infos.dateNextActualisation = divInfos[0].nextSibling.firstChild.textContent.split('le')[1].split('et')[0];
     infos.dateLastPaiement = divInfos[2].firstChild.nodeValue.split('le')[1];
     infos.montantLastPaiement = divInfos[2].firstChild.nodeValue.split(' ')[3];
     infos.countCourrier = bubbleCourrier.firstChild.nodeValue;
-
+    console.log("Je te retourne les infos suivantes");
+    console.log(infos);
     return infos;
 }
 
