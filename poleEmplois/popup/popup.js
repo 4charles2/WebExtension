@@ -34,10 +34,6 @@ myRuntime.onMessage.addListener(function(msg){
     }
 });
 
-
-
-
-
 var aLink = document.getElementById("options_page");
 aLink.addEventListener("click", function() {
   chrome.runtime.openOptionsPage();
