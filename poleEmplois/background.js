@@ -9,13 +9,21 @@ let URLs = {
     "homepage": {
         "urlButtonActualisation": "a[href='https://authentification-candidat.pole-emploi.fr/compte/redirigervers?url=https://actualisation-authent.pole-emploi.fr/acces.htm&actu=true']",
         "urlEspacePerso": "https://candidat.pole-emploi.fr/espacepersonnel/"
+    },
+    "actualisation": {
+        //Page premiere question formation oui ou non
+        "formation": "https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm",
+        //Page du questionnaire
+        "questionnaire": "https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm"
     }
+
 };
 
 let pathScripts = {
     "connect": "/contentScript/connexion.js",
     "PoleEmplois": "/modules/PoleEmplois.js",
     "homepage": "/contentScript/homepage.js",
+    "formation": "/contentScript/formation.js",
     "questionnaire": "/contentScript/questionnaire.js",
     "options": "/options/options.html"
 };
@@ -141,6 +149,7 @@ function eventQuestionnaire() {
     // TODO: Faire le questionnaire à la prochaine actualisation
     // envoyer un mail à adresse email stocké avec la capture de
     // l'écran reçu en message du script questionnaire.js
+    injectFileActiveTab(URLs.questionnaire, pathScripts.questionnaire);
 }
 
 /**
@@ -164,8 +173,9 @@ function eventEspacePersonnel(remote, msg) {
             remote.postMessage({actualisation: "Lance l'actualisation"});
             break;
         case msg.hasOwnProperty('actualisation'):
-            //// TODO: définir les urls Page de l'actualisation
-            injectFileActiveTab(urlPage, pathScripts, 10);
+            //URL de l'onglet dans lequel execute le script
+            //https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm
+            injectFileActiveTab(URLs.actualisation.formation, pathScripts.formation, 10);
             Storage.news.dateLastActualisation = dateLastActualisation.getDate() + ' ' + dateLastActualisation.getMonth();
             break;
         default:

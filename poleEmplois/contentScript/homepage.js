@@ -80,14 +80,13 @@ function collectInfo() {
  */
 function actualisation(urlEspacePerso, urlButtonActualisation) {
     console.log(document.location.href + urlEspacePerso);
-    if (document.location.href === urlEspacePerso) {
-        let buttonActualisation = document.querySelector(urlButtonActualisation);
-        if (buttonActualisation != undefined) {
-            buttonActualisation.click();
-            return {actualisation: "J'ai cliquer sur actualisation"};
+        if (document.location.href === urlEspacePerso) {
+            let buttonActualisation = document.querySelector(urlButtonActualisation);
+            if (buttonActualisation != undefined) {
+                buttonActualisation.click();
+                return {actualisation: "J'ai cliquer sur actualisation"};
+            } else
+                return {finish: 'Vous êtes déjà actualisé'};
         } else
-            return {finish: 'Vous êtes déjà actualisé'};
-    } else
-        return {error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"};
-
+            return {error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"};
 }

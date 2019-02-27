@@ -1,27 +1,30 @@
 //Tableau de correspondance du pave numerique pour le password
 var keyboardPassword = ["E", "A", "D", "B", "H", "I", "J", "F", "G", "C"];
-
 console.log("Sur la page d'identification de pole emplois");
 
+//Patiente que toutes les ressources soit chargé
+//DOM html javascript css etc ...
 //Etablie la connexion avec le background
 var myRuntime = chrome.runtime.connect({name: "Identification"});
 
+console.log("Toutes les ressources sont chargées !");
 
 //reçoit les message du background
-myRuntime.onMessage.addListener(function(m){
-  if(m.hasOwnProperty('chomeur')){
-    console.log(JSON.parse(m.chomeur));
-    connection(JSON.parse(m.chomeur));
-  }else if (m.hasOwnProperty('greeting')){
-    myRuntime.postMessage({thank: "Merci pour ta confirmation de connexion !"});
-    console.log(m);
-  }else {
-    console.log("J'ai reçu un autre msg");
-    console.log(m);
-  }
-});
+  myRuntime.onMessage.addListener(function(m){
+    if(m.hasOwnProperty('chomeur')){
+      console.log(JSON.parse(m.chomeur));
+      connection(JSON.parse(m.chomeur));
+    }else if (m.hasOwnProperty('greeting')){
+      myRuntime.postMessage({thank: "Merci pour ta confirmation de connexion !"});
+      console.log(m);
+    }else {
+      console.log("J'ai reçu un autre msg");
+      console.log(m);
+    }
+  });
 //Indique que la connexion et OK
-myRuntime.postMessage({connect: "(Script de contenu) Je te reçoit runtime."});
+  myRuntime.postMessage({connect: "(Script de contenu) Je te reçoit runtime."});
+
 
 //Utilise une promise enchaînner
 //If identifiant réussi alors saisie du mot de passe
