@@ -11,7 +11,7 @@ export function injectFileActiveTab(newsURL, script, nbTentative) {
         function (tabs) {
         console.log(tabs);
             if (tabs[0].url == newsURL) {
-                console.log("Sur la bonne page welcome home");
+                console.log("Sur la bonne page welcome home" + script);
                 chrome.tabs.executeScript({
                     file: script
                 });
@@ -23,7 +23,8 @@ export function injectFileActiveTab(newsURL, script, nbTentative) {
                         injectFileActiveTab(newsURL, script, --nbTentative);
                     }, 3000);
                 else
-                    console.log("Impossible de recuperer les infos sur les onglets" + tabs);
+                    console.log("Impossible de recuperer les infos sur les onglets" + newsURL);
+                    console.log(tabs);
             }
         }
     );

@@ -34,7 +34,7 @@ myRuntime.onMessage.addListener(function (msg) {
             break;
         case msg.hasOwnProperty('actualisation'):
             myRuntime.postMessage({greeting: "Ok je lance l'actualisation"});
-            myRuntime.postMessage(actualisation(URLs.urlEspacePerso, URLs.urlButtonActualisation));
+            actualisation(URLs.urlEspacePerso, URLs.urlButtonActualisation);
             break;
         default:
             console.log("Message du runtime");
@@ -83,10 +83,10 @@ function actualisation(urlEspacePerso, urlButtonActualisation) {
         if (document.location.href === urlEspacePerso) {
             let buttonActualisation = document.querySelector(urlButtonActualisation);
             if (buttonActualisation != undefined) {
+                myRuntime.postMessage({actualisation: "J'ai cliquer sur actualisation"});
                 buttonActualisation.click();
-                return {actualisation: "J'ai cliquer sur actualisation"};
             } else
-                return {finish: 'Vous êtes déjà actualisé'};
+                myRuntime.postMessage({finish: 'Vous êtes déjà actualisé'});
         } else
-            return {error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"};
+            myRuntime.postMessage({error: "Vous n'êtes sur la bonne page pour lancer l'actualisation"});
 }

@@ -11,8 +11,6 @@ let URLs = {
         "urlEspacePerso": "https://candidat.pole-emploi.fr/espacepersonnel/"
     },
     "actualisation": {
-        //Page premiere question formation oui ou non
-        "formation": "https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm",
         //Page du questionnaire
         "questionnaire": "https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm"
     }
@@ -23,8 +21,8 @@ let pathScripts = {
     "connect": "/contentScript/connexion.js",
     "PoleEmplois": "/modules/PoleEmplois.js",
     "homepage": "/contentScript/homepage.js",
-    "formation": "/contentScript/formation.js",
     "questionnaire": "/contentScript/questionnaire.js",
+    "formation": "/contentScript/formation.js",
     "options": "/options/options.html"
 };
 
@@ -107,7 +105,8 @@ chrome.runtime.onConnect.addListener((remote) => {
                     console.log("coucou homepage.js");
                     eventEspacePersonnel(remote, msg);
                     break;
-                case("Questionnaire"):
+                case("Questionnaire" || "Formation"):
+                    console.log("(Runtime) Processus d'actualisation en cours");
                     eventQuestionnaire(remote, msg);
                     break;
                 case("options"):
@@ -145,11 +144,40 @@ chrome.runtime.onConnect.addListener((remote) => {
     });
 });
 
-function eventQuestionnaire() {
+function eventQuestionnaire(remote, msg) {
+
     // TODO: Faire le questionnaire à la prochaine actualisation
     // envoyer un mail à adresse email stocké avec la capture de
     // l'écran reçu en message du script questionnaire.js
-    injectFileActiveTab(URLs.questionnaire, pathScripts.questionnaire);
+    switch(true){
+        case msg.hasOwnProperty('connect'):
+            console.log(msg);
+            remote.postMessage({'formation': "Reponds aux questions sur la formation !"});
+            break;
+        case msg.hasOwnProperty("questionnaire"):
+            console.log("La procedure d'actualisation est en cours");
+            console.log(msg);
+            console.log(" Ok Remplis le questionnaire");
+
+            setTimeout(function(){
+                injectFileActiveTab(URLs.actualisation.questionnaire, pathScripts.questionnaire);
+                remote.postMessage({'questionnaire': "Ok Je remplie le questionnaire"});
+            }, 1000);
+
+            break;
+        case msg.hasOwnProperty("valide"):
+            console.log(msg);
+            //injectFileActiveTab(URLsactualisation.questionnaire, pathScripts.valider);
+            break;
+        case msg.hasOwnProperty("preuve"):
+            //TODO faire un lien dans le popup qui ouvre une page avec la capture d'écran des réponses aux questions
+
+            break;
+        default:
+            console.log("Je ne comprend pas ton message : ");
+            console.log(msg);
+    }
+
 }
 
 /**
@@ -175,8 +203,11 @@ function eventEspacePersonnel(remote, msg) {
         case msg.hasOwnProperty('actualisation'):
             //URL de l'onglet dans lequel execute le script
             //https://actualisation-authent.pole-emploi.fr/WebUnidialog/AC/declareSituPage01.htm
-            injectFileActiveTab(URLs.actualisation.formation, pathScripts.formation, 10);
-            Storage.news.dateLastActualisation = dateLastActualisation.getDate() + ' ' + dateLastActualisation.getMonth();
+            console.log(msg);
+            setTimeout(function (){
+                injectFileActiveTab(URLs.actualisation.questionnaire, pathScripts.questionnaire, 10) }
+            , 1000);
+            //Storage.news.dateLastActualisation = dateLastActualisation.getDate() + ' ' + dateLastActualisation.getMonth();
             break;
         default:
             console.log(msg);
